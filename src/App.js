@@ -11,13 +11,15 @@ const SApp = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  font-size: 18px;
   color: white;
+  padding: 20px 40px;
 `;
 
 const SProvider = styled.div`
   width: 100%;
-  max-width: 600px;
+  max-width: 400px;
+  margin: 5px auto;
   display: flex;
   justify-content: space-between;
 `;
