@@ -36,16 +36,56 @@ const SProviderCheck = styled.div`
   }
 `;
 
+const web3Providers = [
+  {
+    name: "Metamask",
+    check: "isMetaMask"
+  },
+  {
+    name: "Trust",
+    check: "isTrust"
+  },
+  {
+    name: "Coinbase",
+    chec: "isToshi"
+  },
+  {
+    name: "Cipher",
+    chec: "isCipher"
+  },
+  {
+    name: "imToken",
+    chec: "isImToken"
+  },
+  {
+    name: "Status",
+    chec: "isStatus"
+  },
+  {
+    name: "Tokenary",
+    chec: "isTokenary"
+  }
+];
+
+function checkWeb3Providers() {
+  let result = {
+    injectedWeb3: window.ethereum || window.web3
+  };
+
+  if (result.injectedWeb3) {
+    web3Providers.forEach(provider => {
+      result[provider.check] =
+        window.ethereum[provider.check] ||
+        window.web3.currentProvider[provider.check];
+    });
+  }
+
+  return result;
+}
+
 class App extends Component {
   state = {
-    injectedWeb3: window.ethereum || window.web3,
-    isMetaMask: window.web3 ? window.web3.currentProvider.isMetaMask : false,
-    isTrust: window.web3 ? window.web3.currentProvider.isTrust : false,
-    isToshi: window.web3 ? window.web3.currentProvider.isToshi : false,
-    isCipher: window.web3 ? window.web3.currentProvider.isCipher : false,
-    isImToken: window.web3 ? window.web3.currentProvider.isImToken : false,
-    isStatus: window.web3 ? window.web3.currentProvider.isStatus : false,
-    isTokenary: window.web3 ? window.web3.currentProvider.isTokenary : false
+    ...checkWeb3Providers()
   };
   render() {
     return (
@@ -56,55 +96,14 @@ class App extends Component {
             <img src={this.state.injectedWeb3 ? pass : fail} alt="check" />
           </SProviderCheck>
         </SProvider>
-
-        <SProvider>
-          <SProviderName>{"Metamask"}</SProviderName>
-          <SProviderCheck>
-            <img src={this.state.isMetaMask ? pass : fail} alt="check" />
-          </SProviderCheck>
-        </SProvider>
-
-        <SProvider>
-          <SProviderName>{"Trust"}</SProviderName>
-          <SProviderCheck>
-            <img src={this.state.isTrust ? pass : fail} alt="check" />
-          </SProviderCheck>
-        </SProvider>
-
-        <SProvider>
-          <SProviderName>{"Coinbase"}</SProviderName>
-          <SProviderCheck>
-            <img src={this.state.isToshi ? pass : fail} alt="check" />
-          </SProviderCheck>
-        </SProvider>
-
-        <SProvider>
-          <SProviderName>{"Cipher"}</SProviderName>
-          <SProviderCheck>
-            <img src={this.state.isCipher ? pass : fail} alt="check" />
-          </SProviderCheck>
-        </SProvider>
-
-        <SProvider>
-          <SProviderName>{"imToken"}</SProviderName>
-          <SProviderCheck>
-            <img src={this.state.isImToken ? pass : fail} alt="check" />
-          </SProviderCheck>
-        </SProvider>
-
-        <SProvider>
-          <SProviderName>{"Status"}</SProviderName>
-          <SProviderCheck>
-            <img src={this.state.isStatus ? pass : fail} alt="check" />
-          </SProviderCheck>
-        </SProvider>
-
-        <SProvider>
-          <SProviderName>{"Tokenary"}</SProviderName>
-          <SProviderCheck>
-            <img src={this.state.isTokenary ? pass : fail} alt="check" />
-          </SProviderCheck>
-        </SProvider>
+        {web3Providers.map(provider => (
+          <SProvider>
+            <SProviderName>{provider.name}</SProviderName>
+            <SProviderCheck>
+              <img src={this.state[provider.check] ? pass : fail} alt="check" />
+            </SProviderCheck>
+          </SProvider>
+        ))}
       </SApp>
     );
   }
