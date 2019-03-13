@@ -47,23 +47,23 @@ const web3Providers = [
   },
   {
     name: "Coinbase",
-    chec: "isToshi"
+    check: "isToshi"
   },
   {
     name: "Cipher",
-    chec: "isCipher"
+    check: "isCipher"
   },
   {
     name: "imToken",
-    chec: "isImToken"
+    check: "isImToken"
   },
   {
     name: "Status",
-    chec: "isStatus"
+    check: "isStatus"
   },
   {
     name: "Tokenary",
-    chec: "isTokenary"
+    check: "isTokenary"
   }
 ];
 
