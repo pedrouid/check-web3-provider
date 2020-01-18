@@ -1,7 +1,12 @@
 import React, { Component } from "react";
+import Web3Connect from "web3connect";
+import { detect } from "detect-browser";
 import styled from "styled-components";
+
 import pass from "./assets/pass.png";
 import fail from "./assets/fail.png";
+
+import providerMap from "./providers";
 
 const SApp = styled.div`
   text-align: center;
@@ -16,7 +21,7 @@ const SApp = styled.div`
   padding: 20px 40px;
 `;
 
-const SProvider = styled.div`
+const SResult = styled.div`
   width: 100%;
   max-width: 400px;
   margin: 5px auto;
@@ -24,11 +29,11 @@ const SProvider = styled.div`
   justify-content: space-between;
 `;
 
-const SProviderName = styled.div`
+const SResultLabel = styled.div`
   font-weight: bold;
 `;
 
-const SProviderCheck = styled.div`
+const SResultImage = styled.div`
   width: 40px;
   height: 40px;
   & img {
@@ -36,73 +41,53 @@ const SProviderCheck = styled.div`
   }
 `;
 
-const web3Providers = [
-  {
-    name: "Metamask",
-    check: "isMetaMask"
-  },
-  {
-    name: "Trust",
-    check: "isTrust"
-  },
-  {
-    name: "Coinbase",
-    check: "isToshi"
-  },
-  {
-    name: "Cipher",
-    check: "isCipher"
-  },
-  {
-    name: "imToken",
-    check: "isImToken"
-  },
-  {
-    name: "Status",
-    check: "isStatus"
-  },
-  {
-    name: "Tokenary",
-    check: "isTokenary"
-  }
-];
-
-function checkWeb3Providers() {
-  let result = {
-    injectedWeb3: window.ethereum || window.web3
-  };
-
-  if (result.injectedWeb3) {
-    web3Providers.forEach(provider => {
-      result[provider.check] =
-        window.ethereum[provider.check] ||
-        window.web3.currentProvider[provider.check];
-    });
-  }
-
-  return result;
-}
+const SResultText = styled.div`
+  width: 100px;
+  height: 40px;
+  text-align: right;
+`;
 
 class App extends Component {
   state = {
-    ...checkWeb3Providers()
+    isMobile: Web3Connect.isMobile(),
+    browser: detect(),
+    providers: Web3Connect.checkInjectedProviders()
   };
   render() {
+    const { isMobile, browser, providers } = this.state;
     return (
       <SApp>
-        <SProvider>
-          <SProviderName>{"Web3 Available"}</SProviderName>
-          <SProviderCheck>
-            <img src={this.state.injectedWeb3 ? pass : fail} alt="check" />
-          </SProviderCheck>
-        </SProvider>
-        {web3Providers.map(provider => (
-          <SProvider>
-            <SProviderName>{provider.name}</SProviderName>
-            <SProviderCheck>
-              <img src={this.state[provider.check] ? pass : fail} alt="check" />
-            </SProviderCheck>
-          </SProvider>
+        <SResult>
+          <SResultLabel>{"Browser Name"}</SResultLabel>
+          <SResultText>{browser ? browser.name : "unknown"}</SResultText>
+        </SResult>
+        <SResult>
+          <SResultLabel>{"Browser Version"}</SResultLabel>
+          <SResultText>{browser ? browser.version : "unknown"}</SResultText>
+        </SResult>
+        <SResult>
+          <SResultLabel>{"Browser OS"}</SResultLabel>
+          <SResultText>{browser ? browser.os : "unknown"}</SResultText>
+        </SResult>
+        <SResult>
+          <SResultLabel>{"isMobile"}</SResultLabel>
+          <SResultImage>
+            <img src={isMobile ? pass : fail} alt="check" />
+          </SResultImage>
+        </SResult>
+        <SResult>
+          <SResultLabel>{"Web3 Available"}</SResultLabel>
+          <SResultImage>
+            <img src={providers.injectedAvailable ? pass : fail} alt="check" />
+          </SResultImage>
+        </SResult>
+        {providerMap.map(provider => (
+          <SResult key={provider.name}>
+            <SResultLabel>{provider.name}</SResultLabel>
+            <SResultImage>
+              <img src={providers[provider.check] ? pass : fail} alt="check" />
+            </SResultImage>
+          </SResult>
         ))}
       </SApp>
     );
