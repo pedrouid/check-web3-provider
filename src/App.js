@@ -6,8 +6,6 @@ import styled from "styled-components";
 import pass from "./assets/pass.png";
 import fail from "./assets/fail.png";
 
-import providerMap from "./providers";
-
 const SApp = styled.div`
   text-align: center;
   background-color: #282c34;
@@ -81,7 +79,7 @@ class App extends Component {
             <img src={providers.injectedAvailable ? pass : fail} alt="check" />
           </SResultImage>
         </SResult>
-        {providerMap.map(provider => (
+        {Web3Connect.providers.map(provider => (
           <SResult key={provider.name}>
             <SResultLabel>{provider.name}</SResultLabel>
             <SResultImage>
