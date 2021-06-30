@@ -49,12 +49,17 @@ class App extends Component {
   state = {
     isMobile: Web3Connect.isMobile(),
     browser: detect(),
-    providers: Web3Connect.checkInjectedProviders()
+    providers: Web3Connect.checkInjectedProviders(),
   };
   render() {
     const { isMobile, browser, providers } = this.state;
+    console.log("browser", browser);
     return (
       <SApp>
+        <SResult>
+          <SResultLabel>{"Browser Type"}</SResultLabel>
+          <SResultText>{browser ? browser.type : "unknown"}</SResultText>
+        </SResult>
         <SResult>
           <SResultLabel>{"Browser Name"}</SResultLabel>
           <SResultText>{browser ? browser.name : "unknown"}</SResultText>
@@ -79,7 +84,7 @@ class App extends Component {
             <img src={providers.injectedAvailable ? pass : fail} alt="check" />
           </SResultImage>
         </SResult>
-        {Web3Connect.providers.map(provider => (
+        {Web3Connect.providers.map((provider) => (
           <SResult key={provider.name}>
             <SResultLabel>{provider.name}</SResultLabel>
             <SResultImage>
