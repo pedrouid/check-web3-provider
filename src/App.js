@@ -57,6 +57,13 @@ class App extends Component {
     return (
       <SApp>
         <SResult>
+          <SResultLabel>{"Touch points"}</SResultLabel>
+          <SResultText>
+            {window.navigator ? navigator.maxTouchPoints : "unknown"}
+          </SResultText>
+        </SResult>
+
+        <SResult>
           <SResultLabel>{"Browser Type"}</SResultLabel>
           <SResultText>{browser ? browser.type : "unknown"}</SResultText>
         </SResult>
