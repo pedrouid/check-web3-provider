@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import Web3Connect from "web3connect";
+import * as Web3Modal from "web3modal";
 import { detect } from "detect-browser";
 import styled from "styled-components";
+import * as windowMetadata from "@walletconnect/window-metadata";
 
 import pass from "./assets/pass.png";
 import fail from "./assets/fail.png";
@@ -47,13 +48,21 @@ const SResultText = styled.div`
 
 class App extends Component {
   state = {
-    isMobile: Web3Connect.isMobile(),
+    isMobile: Web3Modal.isMobile(),
     browser: detect(),
-    providers: Web3Connect.checkInjectedProviders(),
+    checks: Web3Modal.checkInjectedProviders(),
+    metadata: windowMetadata.getWindowMetadata(),
   };
   render() {
-    const { isMobile, browser, providers } = this.state;
+    const { isMobile, browser, checks, metadata } = this.state;
+    console.log("isMobile", isMobile);
     console.log("browser", browser);
+    console.log("checks", checks);
+    console.log("metadata", metadata);
+    const providerList = Object.keys(checks)
+      .filter((x) => x !== x.injectedAvailable)
+      .map((check) => Web3Modal.filterProviders("check", check));
+    console.log("providerList", providerList);
     return (
       <SApp>
         <SResult>
@@ -61,6 +70,21 @@ class App extends Component {
           <SResultText>
             {window.navigator ? navigator.maxTouchPoints : "unknown"}
           </SResultText>
+        </SResult>
+
+        <SResult>
+          <SResultLabel>{"Window Name"}</SResultLabel>
+          <SResultText>{metadata.name ? metadata.name : "unknown"}</SResultText>
+        </SResult>
+        <SResult>
+          <SResultLabel>{"Window Description"}</SResultLabel>
+          <SResultText>
+            {metadata.description ? metadata.description : "unknown"}
+          </SResultText>
+        </SResult>
+        <SResult>
+          <SResultLabel>{"Window Url"}</SResultLabel>
+          <SResultText>{metadata.url ? metadata.url : "unknown"}</SResultText>
         </SResult>
 
         <SResult>
@@ -85,17 +109,18 @@ class App extends Component {
             <img src={isMobile ? pass : fail} alt="check" />
           </SResultImage>
         </SResult>
+
         <SResult>
           <SResultLabel>{"Web3 Available"}</SResultLabel>
           <SResultImage>
-            <img src={providers.injectedAvailable ? pass : fail} alt="check" />
+            <img src={checks.injectedAvailable ? pass : fail} alt="check" />
           </SResultImage>
         </SResult>
-        {Web3Connect.providers.map((provider) => (
+        {providerList.map((provider) => (
           <SResult key={provider.name}>
             <SResultLabel>{provider.name}</SResultLabel>
             <SResultImage>
-              <img src={providers[provider.check] ? pass : fail} alt="check" />
+              <img src={checks[provider.check] ? pass : fail} alt="check" />
             </SResultImage>
           </SResult>
         ))}
